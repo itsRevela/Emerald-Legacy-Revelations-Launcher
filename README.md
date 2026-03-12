@@ -49,7 +49,7 @@ Emerald Legacy Launcher started as a solo project to create a better way to play
     <td style="padding: 20px; border: 1px solid #333;">
       <b>TAURI FRONTEND</b><br>
       A lightweight frontend that handles the user interface and configuration management via webview.
-    </td>
+    </td>*Proudly developed by a passionate team from the LCE community.*
   </tr>
 </table>
 
@@ -68,5 +68,8 @@ Click the heading above to track progress, view active tasks, and see upcoming l
 
 ---
 
-*Developed by The Emerald Team and the Legacy Console Edition Community.*
-***This project is licensed under the GNU GPL v3 License - see the LICENSE file for details.***
+
+
+---
+
+***This project is licensed under the GNU GPL v3 License - see the LICENSE file for details.*** 
