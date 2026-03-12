@@ -1,0 +1,38 @@
+@font-face { font-family: 'Minecraft'; src: url('/fonts/Mojangles.ttf') format('truetype'); }
+@tailwind base; @tailwind components; @tailwind utilities;
+
+* { border-radius: 0 !important; font-family: 'Minecraft', sans-serif !important; image-rendering: pixelated; font-weight: normal !important; }
+body { background: #000; margin: 0; }
+main { background: url('/images/dirt-background.png') repeat !important; background-size: 2000px !important; position: relative; }
+main::before { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.7); z-index: 0; }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+.legacy-btn {
+  @apply transition-all duration-75 flex items-center justify-center;
+  background: #bebebe; border: 4px solid #000 !important;
+  box-shadow: inset 4px 4px #ffffff, inset -4px -4px #555555 !important;
+  color: #3e3e3e !important; cursor: pointer;
+}
+
+.legacy-btn:hover:not(:disabled) { background: #d0d0d0; outline: 4px solid #fff; outline-offset: -8px; }
+.legacy-btn:active:not(:disabled) { box-shadow: inset -4px -4px #ffffff, inset 4px 4px #555555 !important; }
+.legacy-btn:disabled { opacity: 0.6; cursor: not-allowed; filter: grayscale(1); }
+
+.active-tab { background: #388e3c !important; box-shadow: inset 4px 4px #55ff55, inset -4px -4px #1a4d0a !important; color: #fff !important; }
+.reinstall-btn, .confirm-red-btn, .cancel-download-btn { background: #ff5555 !important; box-shadow: inset 4px 4px #ffaaaa, inset -4px -4px #aa0000 !important; color: #fff !important; }
+
+.mc-range { -webkit-appearance: none; background: #000; height: 12px; border: 3px solid #555; width: 100%; }
+.mc-range::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 24px; background: #bebebe; border: 3px solid #000; box-shadow: inset 2px 2px #fff, inset -2px -2px #555; cursor: pointer; }
+
+.social-btn { background: transparent; border: 4px solid #000; box-shadow: inset 4px 4px #555, inset -4px -4px #111; width: 64px; height: 64px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.1s; }
+.social-btn:hover { transform: scale(1.1); }
+.social-btn svg { fill: white; width: 32px; height: 32px; }
+
+.btn-discord { background: #5865F2 !important; box-shadow: inset 4px 4px #8ea1e1, inset -4px -4px #313338 !important; }
+.btn-github { background: #333 !important; box-shadow: inset 4px 4px #666, inset -4px -4px #000 !important; }
+.btn-reddit { background: #FF4500 !important; box-shadow: inset 4px 4px #ff8b60, inset -4px -4px #942700 !important; }
+
+.splash-text { color: #ffff00; text-shadow: 4px 4px #3f3f00; white-space: nowrap; pointer-events: none; z-index: 20; transform: rotate(-20deg); animation: splash-pulse 0.5s infinite alternate; transform-origin: center; }
+@keyframes splash-pulse { from { transform: rotate(-20deg) scale(1); } to { transform: rotate(-20deg) scale(1.05); } }

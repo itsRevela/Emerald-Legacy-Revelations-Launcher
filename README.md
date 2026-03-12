@@ -22,7 +22,9 @@
 ---
 
 ### PROJECT OVERVIEW
-Emerald Legacy Launcher started as a solo project to create a better way to play Legacy Console Edition. Over time, other developers joined the effort, bringing expertise from various preservation projects into one place. By combining these efforts into a single unified launcher, we aim to build the best possible experience for Legacy Console Edition on PC.
+Emerald Legacy Launcher started as a solo project to create a better way to play Legacy Console Edition. Over time, other developers joined the effort, bringing expertise from various preservation projects into one place. 
+
+**Our Philosophy:** For too long, the LCE scene has been fragmented across different, often resource-heavy launchers. Emerald was built to stop this fragmentation and centralize everything into a single, definitive hub. By avoiding bloated frameworks and utilizing a modern Rust/Tauri stack, we deliver a high-performance, cross-platform experience that uses only ~15MB of RAM—leaving all your PC's resources dedicated to the game itself.
 
 ---
 
@@ -67,3 +69,4 @@ Click the heading above to track progress, view active tasks, and see upcoming l
 ---
 
 *Developed by The Emerald Team and the Legacy Console Edition Community.*
+***This project is licensed under the GNU GPL v3 License - see the LICENSE file for details.***
