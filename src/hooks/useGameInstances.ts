@@ -10,14 +10,27 @@ export const useGameInstances = (
   const [installingInstance, setInstallingInstance] = useState<string | null>(null);
   const [downloadProgress, setDownloadProgress] = useState<number>(0);
   const [installedStatus, setInstalledStatus] = useState<InstalledStatus>({
+    lcre_nightly: false,
     vanilla_tu19: false,
     vanilla_tu24: false,
   });
+  const [updateAvailable, setUpdateAvailable] = useState<Record<string, boolean>>({});
 
   const updateAllStatus = async () => {
+    const lcre = await TauriService.checkGameInstalled("lcre_nightly");
     const v19 = await TauriService.checkGameInstalled("vanilla_tu19");
     const v24 = await TauriService.checkGameInstalled("vanilla_tu24");
-    setInstalledStatus({ vanilla_tu19: v19, vanilla_tu24: v24 });
+    setInstalledStatus({ lcre_nightly: lcre, vanilla_tu19: v19, vanilla_tu24: v24 });
+
+    // Check for LCRE updates if installed
+    if (lcre) {
+      try {
+        const hasUpdate = await TauriService.checkForUpdate("lcre_nightly");
+        setUpdateAvailable(prev => ({ ...prev, lcre_nightly: hasUpdate }));
+      } catch {
+        setUpdateAvailable(prev => ({ ...prev, lcre_nightly: false }));
+      }
+    }
   };
 
   const executeInstall = async (id: string, url: string) => {
@@ -52,5 +65,6 @@ export const useGameInstances = (
     downloadProgress,
     executeInstall,
     updateAllStatus,
+    updateAvailable,
   };
 };

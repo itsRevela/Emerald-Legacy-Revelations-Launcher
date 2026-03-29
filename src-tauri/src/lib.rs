@@ -137,12 +137,12 @@ async fn download_and_install(app: AppHandle, state: State<'_, DownloadState>, u
     let child_token = token.clone();
     { *state.token.lock().await = Some(token); }
     
-    if instance_dir.exists() { let _ = fs::remove_dir_all(&instance_dir); }
+    let is_update = instance_dir.exists();
     fs::create_dir_all(&instance_dir).map_err(|e| e.to_string())?;
-    
+
     let zip_path = root.join(format!("temp_{}.zip", instanceId));
     let response = reqwest::get(&url).await.map_err(|e| e.to_string())?;
-    
+
     if !response.status().is_success() {
         return Err(format!("Download failed: {}", response.status()));
     }
@@ -151,7 +151,7 @@ async fn download_and_install(app: AppHandle, state: State<'_, DownloadState>, u
     let mut file = fs::File::create(&zip_path).map_err(|e| e.to_string())?;
     let mut downloaded = 0.0;
     let mut stream = response.bytes_stream();
-    
+
     while let Some(chunk) = stream.next().await {
         if child_token.is_cancelled() {
             drop(file); let _ = fs::remove_file(&zip_path);
@@ -162,46 +162,131 @@ async fn download_and_install(app: AppHandle, state: State<'_, DownloadState>, u
         downloaded += chunk.len() as f64;
         if total_size > 0.0 { let _ = app.emit("download-progress", downloaded / total_size * 100.0); }
     }
-    
+
     drop(file);
     { *state.token.lock().await = None; }
-    
+
+    // Extract to a temp staging directory
+    let staging_dir = root.join(format!("temp_staging_{}", instanceId));
+    if staging_dir.exists() { let _ = fs::remove_dir_all(&staging_dir); }
+    fs::create_dir_all(&staging_dir).map_err(|e| e.to_string())?;
+
     #[cfg(target_os = "linux")]
     let status = Command::new("unzip")
-        .args(["-q", zip_path.to_str().unwrap(), "-d", instance_dir.to_str().unwrap()])
+        .args(["-q", zip_path.to_str().unwrap(), "-d", staging_dir.to_str().unwrap()])
         .status()
         .map_err(|e| e.to_string())?;
 
     #[cfg(not(target_os = "linux"))]
     let status = Command::new("tar")
-        .args(["-xf", zip_path.to_str().unwrap(), "-C", instance_dir.to_str().unwrap()])
+        .args(["-xf", zip_path.to_str().unwrap(), "-C", staging_dir.to_str().unwrap()])
         .status()
         .map_err(|e| e.to_string())?;
-        
+
     let _ = fs::remove_file(&zip_path);
 
     if !status.success() {
+        let _ = fs::remove_dir_all(&staging_dir);
         return Err("Extraction failed".into());
     }
 
-    if let Ok(entries) = fs::read_dir(&instance_dir) {
+    // Unwrap single nested directory if present (e.g. LCREWindows64/)
+    let mut source_dir = staging_dir.clone();
+    if let Ok(entries) = fs::read_dir(&staging_dir) {
         let entries_vec: Vec<_> = entries.flatten().collect();
-        
         if entries_vec.len() == 1 && entries_vec[0].path().is_dir() {
-            let inner_dir = entries_vec[0].path();
-            
-            if let Ok(inner_entries) = fs::read_dir(&inner_dir) {
-                for inner_entry in inner_entries.flatten() {
-                    let file_name = inner_entry.file_name();
-                    let dest_path = instance_dir.join(file_name);
-                    let _ = fs::rename(inner_entry.path(), dest_path);
-                }
-            }
-            let _ = fs::remove_dir(&inner_dir);
+            source_dir = entries_vec[0].path();
         }
     }
+
+    // Copy new/changed files from staging to instance, preserving user data
+    fn merge_directory(src: &std::path::Path, dst: &std::path::Path) -> Result<(), String> {
+        fs::create_dir_all(dst).map_err(|e| e.to_string())?;
+        for entry in fs::read_dir(src).map_err(|e| e.to_string())?.flatten() {
+            let src_path = entry.path();
+            let dst_path = dst.join(entry.file_name());
+            if src_path.is_dir() {
+                merge_directory(&src_path, &dst_path)?;
+            } else {
+                // Only overwrite if the file is new or different size
+                let should_copy = if dst_path.exists() {
+                    let src_size = fs::metadata(&src_path).map(|m| m.len()).unwrap_or(0);
+                    let dst_size = fs::metadata(&dst_path).map(|m| m.len()).unwrap_or(0);
+                    src_size != dst_size
+                } else {
+                    true
+                };
+                if should_copy {
+                    let _ = fs::copy(&src_path, &dst_path);
+                }
+            }
+        }
+        Ok(())
+    }
+
+    merge_directory(&source_dir, &instance_dir).map_err(|e| format!("Merge failed: {}", e))?;
+    let _ = fs::remove_dir_all(&staging_dir);
     
+    // Write version metadata with the current Nightly release timestamp
+    if let Ok(published_at) = fetch_nightly_published_at().await {
+        let metadata = serde_json::json!({ "installed_at": published_at });
+        let _ = fs::write(instance_dir.join("version_metadata.json"), metadata.to_string());
+    }
+
     Ok("Success".into())
+}
+
+async fn fetch_nightly_published_at() -> Result<String, String> {
+    let client = reqwest::Client::new();
+    let response = client
+        .get("https://api.github.com/repos/itsRevela/MinecraftConsoles/releases/tags/Nightly")
+        .header("User-Agent", "Emerald-Legacy-Launcher")
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    if !response.status().is_success() {
+        return Err(format!("GitHub API returned {}", response.status()));
+    }
+
+    let body = response.text().await.map_err(|e| e.to_string())?;
+    let json: serde_json::Value = serde_json::from_str(&body).map_err(|e| e.to_string())?;
+    json["published_at"]
+        .as_str()
+        .map(|s| s.to_string())
+        .ok_or_else(|| "No published_at in response".into())
+}
+
+#[tauri::command]
+#[allow(non_snake_case)]
+async fn check_for_update(app: AppHandle, instanceId: String) -> Result<bool, String> {
+    let instance_dir = get_app_dir(&app).join("instances").join(&instanceId);
+    let metadata_path = instance_dir.join("version_metadata.json");
+
+    // Read local installed timestamp
+    let installed_at = if let Ok(content) = fs::read_to_string(&metadata_path) {
+        if let Ok(json) = serde_json::from_str::<serde_json::Value>(&content) {
+            json["installed_at"].as_str().map(|s| s.to_string())
+        } else {
+            None
+        }
+    } else {
+        None
+    };
+
+    // No metadata = never tracked, treat as update available
+    let installed_at = match installed_at {
+        Some(ts) => ts,
+        None => return Ok(true),
+    };
+
+    // Fetch remote timestamp (silently return false on failure)
+    let remote_at = match fetch_nightly_published_at().await {
+        Ok(ts) => ts,
+        Err(_) => return Ok(false),
+    };
+
+    Ok(remote_at > installed_at)
 }
 
 #[tauri::command]
@@ -258,7 +343,7 @@ pub fn run() {
     tauri::Builder::default()
         .manage(DownloadState { token: Arc::new(Mutex::new(None)) })
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![launch_game, check_game_installed, save_config, load_config, download_and_install, open_instance_folder, cancel_download, get_available_runners])
+        .invoke_handler(tauri::generate_handler![launch_game, check_game_installed, save_config, load_config, download_and_install, open_instance_folder, cancel_download, get_available_runners, check_for_update])
         .run(tauri::generate_context!())
         .expect("error");
 }

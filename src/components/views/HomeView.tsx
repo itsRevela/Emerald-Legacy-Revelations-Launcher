@@ -5,6 +5,7 @@ interface HomeViewProps {
   selectedInstance: string;
   setSelectedInstance: (id: string) => void;
   installedStatus: Record<string, boolean>;
+  updateAvailable: Record<string, boolean>;
   isRunning: boolean;
   installingInstance: string | null;
   fadeAndLaunch: () => void;
@@ -17,13 +18,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
   selectedInstance,
   setSelectedInstance,
   installedStatus,
+  updateAvailable,
   isRunning,
   installingInstance,
   fadeAndLaunch,
   playSfx,
   setActiveTab,
 }) => {
-  const hasInstalledInstance = installedStatus.vanilla_tu19 || installedStatus.vanilla_tu24;
+  const hasInstalledInstance = installedStatus.lcre_nightly || installedStatus.vanilla_tu19 || installedStatus.vanilla_tu24;
 
   return (
     <div className="flex flex-col items-center text-center animate-in fade-in">
@@ -44,6 +46,9 @@ export const HomeView: React.FC<HomeViewProps> = ({
               }}
               className="w-full legacy-select p-3 text-2xl outline-none"
             >
+              {installedStatus.lcre_nightly && (
+                <option value="lcre_nightly">LCRE Latest (TU19)</option>
+              )}
               {installedStatus.vanilla_tu19 && (
                 <option value="vanilla_tu19">Vanilla Nightly (TU19)</option>
               )}
@@ -51,6 +56,20 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 <option value="vanilla_tu24">Vanilla TU24</option>
               )}
             </select>
+            {updateAvailable[selectedInstance] && (
+              <div className="flex items-center justify-between bg-[#2a2a2a] border-2 border-[#ffff55] p-3">
+                <span className="text-[#ffff55] text-lg font-bold">Update Available!</span>
+                <button
+                  onClick={() => {
+                    playSfx('click.wav');
+                    setActiveTab("versions");
+                  }}
+                  className="legacy-btn px-4 py-1 text-lg"
+                >
+                  Update
+                </button>
+              </div>
+            )}
             <button
               onClick={fadeAndLaunch}
               disabled={isRunning || !!installingInstance}

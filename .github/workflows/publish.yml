@@ -1,6 +1,9 @@
 name: 'publish'
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -30,15 +33,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
-      - name: setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
       - name: setup node
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-          cache: 'pnpm'
 
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -51,14 +49,34 @@ jobs:
           workspaces: './src-tauri -> target'
 
       - name: install frontend dependencies
-        run: pnpm install
+        run: npm install
+
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          tauriScript: npx tauri
           tagName: v__VERSION__
-          releaseName: 'Emerald v__VERSION__'
-          releaseBody: '*pls edit me*'
-          releaseDraft: true
+          releaseName: 'Emerald Legacy Revelations v__VERSION__'
+          releaseBody: |
+            # What to download?
+
+            - `Emerald.Legacy.Revelations-*.rpm` for GNU/Linux (RHEL)
+            - `Emerald.Legacy.Revelations-*.deb` for GNU/Linux (Debian+Ubuntu)
+            - `Emerald.Legacy.Revelations-*.AppImage` for GNU/Linux (Universal)
+            - `Emerald.Legacy.Revelations-*_x64.dmg` for macOS (Intel)
+            - `Emerald.Legacy.Revelations-*_aarch64.dmg` for macOS (M-series)
+            - `Emerald.Legacy.Revelations-*.exe` for Windows (Setup)
+            - `Emerald.Legacy.Revelations-*.msi` for Windows (Setup)
+
+            ---
+
+            # Windows SmartScreen
+
+            This software is completely safe. Because the launcher is unsigned, you will see a "Windows protected your PC" window. To proceed:
+
+            1. Click the **"More info"** link under the main text.
+            2. Click the **"Run anyway"** button that appears.
+          releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}

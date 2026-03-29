@@ -11,6 +11,26 @@ export const useAudio = (musicVol: number, sfxVol: number, isMuted: boolean) => 
     }
   }, [musicVol, isMuted]);
 
+  // Pause music when window loses focus, resume on focus
+  useEffect(() => {
+    const onBlur = () => {
+      if (musicRef.current && !musicRef.current.paused) {
+        musicRef.current.pause();
+      }
+    };
+    const onFocus = () => {
+      if (musicRef.current && musicRef.current.paused && musicRef.current.src && !isMuted) {
+        musicRef.current.play().catch(() => {});
+      }
+    };
+    window.addEventListener('blur', onBlur);
+    window.addEventListener('focus', onFocus);
+    return () => {
+      window.removeEventListener('blur', onBlur);
+      window.removeEventListener('focus', onFocus);
+    };
+  }, [isMuted]);
+
   const playRandomMusic = () => {
     if (!musicRef.current) return;
     let track = Math.floor(Math.random() * 5) + 1;

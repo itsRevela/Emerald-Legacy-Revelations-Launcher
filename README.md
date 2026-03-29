@@ -1,7 +1,7 @@
 <div align="center">
   <img height="150" src="https://raw.githubusercontent.com/Emerald-Legacy-Launcher/Emerald-Legacy-Launcher/refs/heads/main/public/images/logo.png">
-  <h1>Emerald Legacy Launcher</h1>
-  <p>FOSS cross-platform launcher for Minecraft Legacy Console Edition</p>
+  <h1>Emerald Legacy Revelations Launcher</h1>
+  <p>A modified version of Emerald Legacy Launcher for LCRE (Legacy Console Revelations Edition)</p>
 </div>
 
 <p align="center">
@@ -16,18 +16,18 @@
 ---
 
 > [!IMPORTANT]
-> **Emerald Legacy Launcher is currently in Alpha.**
-> Expect bugs, frequent updates, and features that are still being polished as we work toward a stable release.
+> **Emerald Legacy Revelations Launcher is currently in Alpha.**
+> Expect bugs, frequent updates, and features that are still being polished work is done toward a stable release. This repo is a fork of `Emerald-Legacy-Launcher/Emerald-Legacy-Launcher`, adding support for Legacy Console Revelations Edition.
 
 ---
 
-<img width="1355" height="922" alt="image" src="https://github.com/user-attachments/assets/6798dd00-4c7c-4b57-9116-7648ce90ae93" />
+<img alt="Emerald Legacy Revelations Launcher" src="public/images/preview.png" />
 
 
 ### PROJECT OVERVIEW
-Emerald Legacy Launcher started as a solo project to create a better way to play Legacy Console Edition. Over time, other developers joined the effort, bringing expertise from various preservation projects into one place. 
+Emerald Legacy Revelations Launcher is a fork of Emerald Legacy Launcher, modified to support the LCRE (Legacy Console Revelations Edition) client with automatic update checking and version management. Built on the original work by KayJann.
 
-**Our Philosophy:** For too long, the LCE scene has been fragmented across different, often resource-heavy launchers. Emerald was built to stop this fragmentation and centralize everything into a single, definitive hub. By avoiding bloated frameworks and utilizing a modern Rust/Tauri stack, we deliver a high-performance, cross-platform experience that uses only ~15MB of RAM, leaving all your PC's resources dedicated to the game itself.
+**Philosophy:** For too long, the LCE scene has been fragmented across different, often resource-heavy launchers. Emerald was built to stop this fragmentation and centralize everything into a single, definitive hub. By avoiding bloated frameworks and utilizing a modern Rust/Tauri stack, we deliver a high-performance, cross-platform experience that uses only ~15MB of RAM, leaving all your PC's resources dedicated to the game itself.
 
 ---
 
@@ -37,7 +37,7 @@ Emerald Legacy Launcher started as a solo project to create a better way to play
   <tr>
     <td style="padding: 20px; border: 1px solid #333;">
       <b>EASY SETUP</b><br>
-      An automated installation process for TU19 and TU24, with more versions coming in future updates.
+      An automated installation process for LCRE, TU19, and TU24, with more versions coming in future updates.
     </td>
     <td style="padding: 20px; border: 1px solid #333;">
       <b>RUST BACKEND</b><br>
@@ -50,9 +50,9 @@ Emerald Legacy Launcher started as a solo project to create a better way to play
       An integrated settings menu to change your username and manage game parameters directly through the launcher.
     </td>
     <td style="padding: 20px; border: 1px solid #333;">
-      <b>TAURI FRONTEND</b><br>
-      A lightweight frontend that handles the user interface and configuration management via webview.
-    </td>*Proudly developed by a passionate team from the LCE community.*
+      <b>UPDATE CHECKING</b><br>
+      Automatically checks for new LCRE builds and notifies you when an update is available.
+    </td>
   </tr>
 </table>
 
@@ -64,12 +64,12 @@ Click the heading above to track progress, view active tasks, and see upcoming l
 ---
 
 > ### ACKNOWLEDGMENTS
-> * <sub style="color: grey;">**The Emerald Team:** Technical development and maintenance.</sub>
+> * <sub style="color: grey;">**KayJann:** Original Emerald Legacy Launcher development.</sub>
+> * <sub style="color: grey;">**Revela:** Added support for Legacy Console Edition Revelations.</sub>
 > * <sub style="color: grey;">**4J Studios & Mojang:** Original creators of Legacy Console Edition.</sub>
 > * <sub style="color: grey;">**smartcmd & The LCE Community:** Research and foundations for Legacy Console Edition on PC.</sub>
 > * <sub style="color: grey;">**Tauri & Rust:** Core technologies.</sub>
 
 ---
 
-***This project is licensed under the [GNU GPL v3 License](LICENSE)*** 
- 
+***This project is licensed under the [GNU GPL v3 License](LICENSE)***

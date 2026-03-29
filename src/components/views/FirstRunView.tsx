@@ -32,7 +32,7 @@ export const FirstRunView: React.FC<FirstRunViewProps> = ({
     >
       <img src="/images/MenuTitle.png" className="w-[500px] mb-12" alt="Menu Title" />
       <div className="bg-[#2a2a2a] p-10 border-4 border-black w-full max-w-2xl text-center shadow-[inset_4px_4px_#555,inset_-4px_-4px_#111]">
-        <h2 className="text-4xl text-emerald-400 mb-4">Welcome to Emerald Legacy!</h2>
+        <h2 className="text-4xl text-emerald-400 mb-4">Welcome to Emerald Legacy Revelations!</h2>
         <input
           type="text"
           value={username}

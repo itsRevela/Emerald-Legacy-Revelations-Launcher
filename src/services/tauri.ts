@@ -10,4 +10,5 @@ export const TauriService = {
   getAvailableRunners: () => invoke<Runner[]>("get_available_runners"),
   openInstanceFolder: (instanceId: string) => invoke("open_instance_folder", { instanceId }),
   cancelDownload: () => invoke("cancel_download"),
+  checkForUpdate: (instanceId: string) => invoke<boolean>("check_for_update", { instanceId }),
 };

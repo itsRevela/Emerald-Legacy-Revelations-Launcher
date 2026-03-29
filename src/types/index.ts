@@ -11,6 +11,7 @@ export interface AppConfig {
 }
 
 export interface InstalledStatus {
+  lcre_nightly: boolean;
   vanilla_tu19: boolean;
   vanilla_tu24: boolean;
   [key: string]: boolean;
@@ -19,6 +20,7 @@ export interface InstalledStatus {
 export interface ReinstallModalData {
   id: string;
   url: string;
+  isUpdate?: boolean;
 }
 
 export interface McNotification {

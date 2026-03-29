@@ -80,15 +80,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       )}
 
-      <div
-        onClick={() => {
-          playSfx('click.wav');
-          openUrl("https://github.com/KayJannOnGit");
-        }}
-        className={`${installingInstance ? "pt-6" : "mt-auto pt-6"} flex flex-col items-center border-t-4 border-black/30 cursor-pointer group`}
-      >
+      <div className={`${installingInstance ? "pt-6" : "mt-auto pt-6"} flex flex-col items-center border-t-4 border-black/30`}>
         <span className="text-slate-500 text-[10px] uppercase">Developed by</span>
-        <span className="text-emerald-500 text-sm font-bold group-hover:underline">KayJann</span>
+        <div className="flex gap-1 text-sm font-bold">
+          <span
+            onClick={() => { playSfx('click.wav'); openUrl("https://github.com/KayJannOnGit"); }}
+            className="text-emerald-500 cursor-pointer hover:underline"
+          >KayJann</span>
+          <span className="text-slate-500">&</span>
+          <span
+            onClick={() => { playSfx('click.wav'); openUrl("https://github.com/itsRevela"); }}
+            className="text-emerald-500 cursor-pointer hover:underline"
+          >Revela</span>
+        </div>
       </div>
     </aside>
   );

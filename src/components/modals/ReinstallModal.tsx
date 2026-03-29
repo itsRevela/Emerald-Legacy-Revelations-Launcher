@@ -17,11 +17,13 @@ export const ReinstallModal: React.FC<ReinstallModalProps> = ({
   return (
     <div className="absolute inset-0 bg-black/80 z-[200] flex items-center justify-center animate-in fade-in">
       <div className="bg-[#2a2a2a] border-4 border-black p-8 w-[600px] text-center shadow-[inset_4px_4px_#555,inset_-4px_-4px_#111]">
-        <h3 className="text-4xl text-[#ff5555] mb-6 font-bold uppercase tracking-widest">
-          Warning
+        <h3 className={`text-4xl mb-6 font-bold uppercase tracking-widest ${data.isUpdate ? 'text-[#ffff55]' : 'text-[#ff5555]'}`}>
+          {data.isUpdate ? 'Update' : 'Warning'}
         </h3>
         <p className="text-2xl mb-10 leading-relaxed text-white">
-          Reinstalling will delete all data. Continue?
+          {data.isUpdate
+            ? 'A new version is available. Update now? Your saves and settings will be preserved.'
+            : 'Reinstalling will delete all data. Continue?'}
         </p>
         <div className="flex gap-6">
           <button

@@ -18,7 +18,7 @@ export default function App() {
   const [username, setUsername] = useState("");
   const [activeTab, setActiveTab] = useState("home");
   const [isFirstRun, setIsFirstRun] = useState(true);
-  const [selectedInstance, setSelectedInstance] = useState<string>("vanilla_tu19");
+  const [selectedInstance, setSelectedInstance] = useState<string>("lcre_nightly");
   const [reinstallModal, setReinstallModal] = useState<ReinstallModalData | null>(null);
   const [mcNotif, setMcNotif] = useState<McNotification | null>(null);
   const [availableRunners, setAvailableRunners] = useState<Runner[]>([]);
@@ -27,7 +27,7 @@ export default function App() {
 
   const { musicVol, setMusicVol, sfxVol, setSfxVol, isMuted, setIsMuted } = useSettings();
   const { musicRef, playRandomMusic, playSfx, ensureAudio } = useAudio(musicVol, sfxVol, isMuted);
-  const { installedStatus, installingInstance, downloadProgress, executeInstall, updateAllStatus } = useGameInstances(playSfx, setMcNotif);
+  const { installedStatus, installingInstance, downloadProgress, executeInstall, updateAllStatus, updateAvailable } = useGameInstances(playSfx, setMcNotif);
   const { isRunning, fadeAndLaunch } = useLauncher(selectedInstance, musicRef, isMuted, musicVol, playRandomMusic, playSfx);
 
   useEffect(() => {
@@ -90,6 +90,7 @@ export default function App() {
               selectedInstance={selectedInstance}
               setSelectedInstance={setSelectedInstance}
               installedStatus={installedStatus}
+              updateAvailable={updateAvailable}
               isRunning={isRunning}
               installingInstance={installingInstance}
               fadeAndLaunch={fadeAndLaunch}
@@ -101,6 +102,7 @@ export default function App() {
           {activeTab === "versions" && (
             <VersionsView
               installedStatus={installedStatus}
+              updateAvailable={updateAvailable}
               installingInstance={installingInstance}
               executeInstall={executeInstall}
               setReinstallModal={setReinstallModal}
