@@ -25,7 +25,7 @@
 
 
 ### PROJECT OVERVIEW
-Emerald Legacy Revelations Launcher is a fork of Emerald Legacy Launcher, modified to support the LCRE (Legacy Console Revelations Edition) client with automatic update checking and version management. Built on the original work by KayJann.
+Emerald Legacy Revelations Launcher is a fork of Emerald Legacy Launcher, modified to support the [LCRE (Legacy Console Revelations Edition)](https://github.com/itsRevela/MinecraftConsoles) client with automatic update checking and version management. Built on the original work by KayJann.
 
 **Philosophy:** For too long, the LCE scene has been fragmented across different, often resource-heavy launchers. Emerald was built to stop this fragmentation and centralize everything into a single, definitive hub. By avoiding bloated frameworks and utilizing a modern Rust/Tauri stack, we deliver a high-performance, cross-platform experience that uses only ~15MB of RAM, leaving all your PC's resources dedicated to the game itself.
 
